@@ -1,0 +1,57 @@
+﻿@model WebCityEvents.ViewModels.EventViewModel
+
+@{
+    ViewData["Title"] = "Удаление";
+}
+
+<h1>Удаление</h1>
+
+<h3>Вы уверены, что хотите удалить это мероприятие?</h3>
+<div>
+    <h4>Мероприятие</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Название мероприятия
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EventName)
+        </dd>
+        <dt class="col-sm-2">
+            Дата проведения
+        </dt>
+        <dd class="col-sm-10">
+            @Model.EventDate.ToString("dd.MM.yyyy")
+        </dd>
+        <dt class="col-sm-2">
+            Цена билета
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TicketPrice)
+        </dd>
+        <dt class="col-sm-2">
+            Количество билетов
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TicketAmount)
+        </dd>
+        <dt class="col-sm-2">
+            Место проведения
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PlaceName)
+        </dd>
+        <dt class="col-sm-2">
+            Организатор
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrganizerName)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="EventID" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">Назад к списку</a>
+    </form>
+</div>

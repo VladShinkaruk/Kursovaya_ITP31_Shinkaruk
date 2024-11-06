@@ -1,0 +1,65 @@
+﻿@model WebCityEvents.ViewModels.EventViewModel
+
+@{
+    ViewData["Title"] = "Добавить мероприятие";
+}
+
+<h1>Добавление</h1>
+
+<h4>Меропритие</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label class="control-label">Название мероприятия</label>
+                <input asp-for="EventName" class="form-control" />
+                <span asp-validation-for="EventName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Место проведения</label>
+                <select asp-for="PlaceID" class="form-control" asp-items="ViewBag.PlaceName"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Дата проведения</label>
+                <input asp-for="EventDate" class="form-control" type="date" />
+                <span asp-validation-for="EventDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Цена билета</label>
+                <input asp-for="TicketPrice" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="TicketPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Количество билетов</label>
+                <input asp-for="TicketAmount" class="form-control" />
+                <span asp-validation-for="TicketAmount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Организатор</label>
+                <select asp-for="OrganizerID" class="form-control" asp-items="ViewBag.OrganizerName"></select>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Добавить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Вернуться к списку</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

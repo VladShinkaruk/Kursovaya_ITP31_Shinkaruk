@@ -1,0 +1,128 @@
+﻿@model WebCityEvents.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Главная страница";
+}
+
+<div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <span>Добро пожаловать, @User.Identity.Name!</span>
+    }
+</div>
+
+<h2>Мероприятия</h2>
+<table border="1" cellspacing="10">
+    <caption>Список мероприятий</caption>
+    <thead>
+        <tr>
+            <th>Мероприятие</th>
+            <th>Организатор</th>
+            <th>Дата мероприятия</th>
+            <th>Цена билета</th>
+            <th>Количество билетов</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ev in Model.Events)
+        {
+            <tr>
+                <td>@ev.EventName</td>
+                <td>@ev.OrganizerName</td>
+                <td>@ev.EventDate.ToString("dd/MM/yyyy")</td>
+                <td>@ev.TicketPrice</td>
+                <td>@ev.TicketAmount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Заказы билетов</h2>
+<table border="1" cellspacing="10">
+    <caption>Список заказов билетов</caption>
+    <thead>
+        <tr>
+            <th>Заказчик</th>
+            <th>Мероприятие</th>
+            <th>Дата заказа</th>
+            <th>Количество билетов</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.TicketOrders)
+        {
+            <tr>
+                <td>@order.CustomerName</td>
+                <td>@order.EventName</td>
+                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                <td>@order.TicketCount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Заказчики</h2>
+<table border="1" cellspacing="10">
+    <caption>Список заказчиков</caption>
+    <thead>
+        <tr>
+            <th>Заказчик</th>
+            <th>Данные паспорта</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model.Customers)
+        {
+            <tr>
+                <td>@customer.FullName</td>
+                <td>@customer.PassportData</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Места</h2>
+<table border="1" cellspacing="10">
+    <caption>Список мест</caption>
+    <thead>
+        <tr>
+            <th>Название места</th>
+            <th>Геолокация</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var place in Model.Places)
+        {
+            <tr>
+                <td>@place.PlaceName</td>
+                <td>@place.Geolocation</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Организаторы</h2>
+<table border="1" cellspacing="10">
+    <caption>Список организаторов</caption>
+    <thead>
+        <tr>
+            <th>Организатор</th>
+            <th>Должность</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var organizer in Model.Organizers)
+        {
+            <tr>
+                <td>@organizer.FullName</td>
+                <td>@organizer.Post</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (User.IsInRole("admin"))
+{
+    <h2>Пользователи</h2>
+    <a asp-action="Index" asp-controller="User" class="btn btn-info">Управление пользователями</a>
+}

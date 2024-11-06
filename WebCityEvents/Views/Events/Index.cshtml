@@ -1,0 +1,102 @@
+﻿@model IEnumerable<WebCityEvents.ViewModels.EventViewModel>
+
+@{
+    ViewData["Title"] = "Мероприятия";
+}
+
+<h2>Мероприятия</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">Добавить новое мероприятие</a>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group mb-3">
+        <input type="text" name="eventName" value="@ViewBag.EventName" class="form-control" placeholder="Название мероприятия">
+        <input type="text" name="placeName" value="@ViewBag.PlaceName" class="form-control" placeholder="Место проведения">
+        <input type="text" name="organizerName" value="@ViewBag.OrganizerName" class="form-control" placeholder="Организатор">
+        <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control" placeholder="Дата начала">
+        <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control" placeholder="Дата окончания">
+        <button type="submit" class="btn btn-primary">Поиск</button>
+    </div>
+</form>
+
+<form asp-action="ClearFilters" method="post" class="mb-3">
+    <button type="submit" class="btn btn-danger">Очистить фильтры</button>
+</form>
+
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <p class="text-danger">@ViewBag.Message</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="Date" asp-route-sortDirection="@(ViewBag.SortOrder == "Date" && ViewBag.SortDirection == "asc" ? "desc" : "asc")">Дата</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="Price" asp-route-sortDirection="@(ViewBag.SortOrder == "Price" && ViewBag.SortDirection == "asc" ? "desc" : "asc")">Цена билета</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="Tickets" asp-route-sortDirection="@(ViewBag.SortOrder == "Tickets" && ViewBag.SortDirection == "asc" ? "desc" : "asc")">Кол-во билетов</a>
+                </th>
+                <th>Доступные билеты</th>
+                <th>Место</th>
+                <th>Организатор</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.EventName)</td>
+                    <td>@item.EventDate.ToString("dd.MM.yyyy")</td>
+                    <td>@Html.DisplayFor(modelItem => item.TicketPrice)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TicketAmount)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AvailableTickets)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PlaceName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.OrganizerName)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.EventID">Редактировать</a> |
+                        <a asp-action="Details" asp-route-id="@item.EventID">Подробнее</a> |
+                        <a asp-action="Delete" asp-route-id="@item.EventID">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <span>Страница @ViewBag.CurrentPage из @ViewBag.TotalPages</span>
+        <div>
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)"
+               asp-route-eventName="@ViewBag.EventName"
+               asp-route-placeName="@ViewBag.PlaceName"
+               asp-route-organizerName="@ViewBag.OrganizerName"
+               class="btn btn-primary me-2"
+               disabled="@(ViewBag.CurrentPage == 1 ? "disabled" : null)">
+                Предыдущая
+            </a>
+
+            <form asp-action="Index" method="get" class="d-inline">
+                <input type="hidden" name="eventName" value="@ViewBag.EventName" />
+                <input type="hidden" name="placeName" value="@ViewBag.PlaceName" />
+                <input type="hidden" name="organizerName" value="@ViewBag.OrganizerName" />
+                <input type="number" name="page" min="1" max="@ViewBag.TotalPages" value="@ViewBag.CurrentPage" class="form-control d-inline w-25 me-2" />
+                <button type="submit" class="btn btn-primary">Перейти</button>
+            </form>
+
+            <a asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)"
+               asp-route-eventName="@ViewBag.EventName"
+               asp-route-placeName="@ViewBag.PlaceName"
+               asp-route-organizerName="@ViewBag.OrganizerName"
+               class="btn btn-primary"
+               disabled="@(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : null)">
+                Следующая
+            </a>
+        </div>
+    </div>
+}

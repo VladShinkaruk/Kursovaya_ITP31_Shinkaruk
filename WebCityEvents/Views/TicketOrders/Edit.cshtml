@@ -1,0 +1,125 @@
+﻿@model WebCityEvents.ViewModels.TicketOrderViewModel
+
+@{
+    ViewData["Title"] = "Редактировать";
+}
+
+<h1>Редактировать</h1>
+
+<h4>Заказ билетов</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="OrderID" />
+
+            <div class="form-group">
+                <label>Название мероприятия</label>
+                <input type="text" id="EventSearch" class="form-control" placeholder="Начните вводить название мероприятия..." value="@Model.EventName" />
+                <input type="hidden" asp-for="EventID" id="EventID" />
+                <div id="EventResults" class="list-group" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Заказчик</label>
+                <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerID"></select>
+                <span asp-validation-for="CustomerID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Дата заказа</label>
+                <input asp-for="OrderDate" class="form-control" type="date" value="@Model.OrderDate.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Дата мероприятия</label>
+                <input type="text" id="EventDate" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Количество доступных билетов:</label>
+                <input type="text" id="AvailableTickets" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label>Количество билетов</label>
+                <input asp-for="TicketCount" class="form-control" />
+                <span asp-validation-for="TicketCount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Назад к списку</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var initialEventId = $('#EventID').val();
+            if (initialEventId) {
+                $.ajax({
+                    url: '@Url.Action("GetEventDetails", "TicketOrders")',
+                    data: { eventId: initialEventId },
+                    success: function (data) {
+                        $('#AvailableTickets').val(data.availableTickets);
+                        $('#EventDate').val(data.eventDate ? new Date(data.eventDate).toLocaleDateString() : '');
+                    }
+                });
+            }
+
+            $('#EventSearch').on('input', function () {
+                var term = $(this).val();
+                if (term.length < 2) {
+                    $('#EventResults').hide();
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("SearchEvents", "TicketOrders")',
+                    data: { term: term },
+                    success: function (data) {
+                        $('#EventResults').empty();
+                        if (data.length > 0) {
+                            data.forEach(function (event) {
+                                $('#EventResults').append('<a href="#" class="list-group-item list-group-item-action" data-id="' + event.eventID + '">' + event.eventName + '</a>');
+                            });
+                            $('#EventResults').show();
+                        } else {
+                            $('#EventResults').hide();
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.list-group-item', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).text();
+                $('#EventID').val(id);
+                $('#EventSearch').val(name);
+                $('#EventResults').hide();
+
+                $.ajax({
+                    url: '@Url.Action("GetEventDetails", "TicketOrders")',
+                    data: { eventId: id },
+                    success: function (data) {
+                        $('#AvailableTickets').val(data.availableTickets);
+                        $('#EventDate').val(data.eventDate ? new Date(data.eventDate).toLocaleDateString() : '');
+                    }
+                });
+            });
+        });
+    </script>
+}
