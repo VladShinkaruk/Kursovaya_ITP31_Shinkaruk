@@ -1,6 +1,6 @@
-# BD5
+# Kursovaya_ITP31_Shinkaruk
 
-Проект WebCityEvents предназначен для управления городскими событиями, клиентами и заказами билетов. Построен с использованием .NET и Entity Framework, приложение использует SQL Server в качестве базы данных.
+Проект предназначен для управления городскими событиями, клиентами и заказами билетов. Построен с использованием .NET и Entity Framework, приложение использует SQL Server в качестве базы данных.
 
 ## Возможности:
 - Управление событиями
@@ -9,4 +9,4 @@
 - Система ролей
 
 ## Статус сборки:
-![Build](https://github.com/VladShinkaruk/BD5/actions/workflows/dotnet.yml/badge.svg)
+![Build](https://github.com/VladShinkaruk/Kursovaya_ITP31_Shinkaruk/actions/workflows/dotnet.yml/badge.svg)
