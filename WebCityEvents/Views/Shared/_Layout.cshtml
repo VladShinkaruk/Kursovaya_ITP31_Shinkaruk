@@ -19,37 +19,37 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Index">Мероприятия</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Заказчики</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TicketOrders" asp-action="Index">Заказы билетов</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Places" asp-action="Index">Места</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Organizers" asp-action="Index">Организаторы</a>
-                        </li>
-                        @if (User.IsInRole("admin"))
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Пользователи</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Index">Мероприятия</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Заказчики</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TicketOrders" asp-action="Index">Заказы билетов</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Places" asp-action="Index">Места</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Organizers" asp-action="Index">Организаторы</a>
+                            </li>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Пользователи</a>
+                                </li>
+                            }
                         }
                     </ul>
                     <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <form asp-controller="User" asp-action="Logout" method="post" style="display:inline;">
-                                    <button type="submit" class="nav-link btn btn-link" style="padding: 0; border: none; background: none;">
-                                        Выйти
-                                    </button>
-                                </form>
+                                <a class="nav-link text-dark" href="javascript:;" onclick="document.getElementById('logoutForm').submit();">Выйти</a>
+                                <form id="logoutForm" asp-controller="User" asp-action="Logout" method="post" style="display: none;"></form>
                             </li>
                         }
                         else

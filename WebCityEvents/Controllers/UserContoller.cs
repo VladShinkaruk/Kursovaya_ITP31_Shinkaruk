@@ -49,7 +49,7 @@ namespace WebCityEvents.Controllers
                     await _userManager.AddToRoleAsync(user, "user");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Events");
                 }
 
                 foreach (var error in result.Errors)
@@ -80,7 +80,7 @@ namespace WebCityEvents.Controllers
 
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Events");
                     }
                     else
                     {
@@ -102,7 +102,7 @@ namespace WebCityEvents.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "User");
         }
 
         [Authorize(Roles = "admin")]
@@ -143,6 +143,14 @@ namespace WebCityEvents.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Пользователь с таким email уже существует");
+                    ViewBag.UserRole = new SelectList(_roleManager.Roles, "Name", "Name");
+                    return View(model);
+                }
+
                 var user = new ApplicationUser
                 {
                     UserName = model.UserName,
@@ -166,6 +174,9 @@ namespace WebCityEvents.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            ViewBag.UserRole = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+
             return View(model);
         }
 
@@ -205,6 +216,13 @@ namespace WebCityEvents.Controllers
                 var user = await _userManager.FindByIdAsync(model.Id);
                 if (user != null)
                 {
+                    var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                    if (existingUser != null && existingUser.Id != user.Id)
+                    {
+                        ModelState.AddModelError("Email", "Пользователь с таким email уже существует");
+                        ViewData["UserRole"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name", model.UserRole);
+                        return View(model);
+                    }
                     user.Email = model.Email;
                     user.UserName = model.UserName;
 

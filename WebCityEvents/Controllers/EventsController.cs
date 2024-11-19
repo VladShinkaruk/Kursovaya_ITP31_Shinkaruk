@@ -38,11 +38,11 @@ namespace WebCityEvents.Controllers
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(eventName))
-                eventsQuery = eventsQuery.Where(e => e.EventName.Contains(eventName));
+                eventsQuery = eventsQuery.Where(e => e.EventName.ToLower() == eventName.ToLower());
             if (!string.IsNullOrEmpty(placeName))
-                eventsQuery = eventsQuery.Where(e => e.Place.PlaceName.Contains(placeName));
+                eventsQuery = eventsQuery.Where(e => e.Place.PlaceName.ToLower() == placeName.ToLower());
             if (!string.IsNullOrEmpty(organizerName))
-                eventsQuery = eventsQuery.Where(e => e.Organizer.FullName.Contains(organizerName));
+                eventsQuery = eventsQuery.Where(e => e.Organizer.FullName.ToLower() == organizerName.ToLower());
             if (startDate.HasValue)
                 eventsQuery = eventsQuery.Where(e => e.EventDate >= startDate.Value);
             if (endDate.HasValue)
@@ -300,6 +300,39 @@ namespace WebCityEvents.Controllers
             Response.Cookies.Delete("EndDate");
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> SearchEventNames(string term)
+        {
+            var events = await _context.Events
+                .Where(e => e.EventName.Contains(term))
+                .Select(e => e.EventName)
+                .Distinct()
+                .Take(5)
+                .ToListAsync();
+            return Json(events);
+        }
+
+        public async Task<IActionResult> SearchPlaceNames(string term)
+        {
+            var places = await _context.Events
+                .Where(e => e.Place.PlaceName.Contains(term))
+                .Select(e => e.Place.PlaceName)
+                .Distinct()
+                .Take(5)
+                .ToListAsync();
+            return Json(places);
+        }
+
+        public async Task<IActionResult> SearchOrganizerNames(string term)
+        {
+            var organizers = await _context.Events
+                .Where(e => e.Organizer.FullName.Contains(term))
+                .Select(e => e.Organizer.FullName)
+                .Distinct()
+                .Take(5)
+                .ToListAsync();
+            return Json(organizers);
         }
     }
 }

@@ -14,6 +14,5 @@ namespace WebCityEvents.ViewModels.Users
         public DateTime RegistrationDate { get; set; }
         [Display(Name = "Роль")]
         public string RoleName { get; set; }
-
     }
 }

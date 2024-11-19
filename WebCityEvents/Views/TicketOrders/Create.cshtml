@@ -65,48 +65,48 @@
     }
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $(document).ready(function () {
-                $('#EventSearch').on('input', function () {
-                    var term = $(this).val();
-                    if (term.length < 2) {
-                        $('#EventResults').hide();
-                        return;
-                    }
-
-                    $.ajax({
-                        url: '@Url.Action("SearchEvents", "TicketOrders")',
-                        data: { term: term },
-                        success: function (data) {
-                            $('#EventResults').empty();
-                            if (data.length > 0) {
-                                data.forEach(function (event) {
-                                    $('#EventResults').append('<a href="#" class="list-group-item list-group-item-action" data-id="' + event.eventID + '">' + event.eventName + '</a>');
-                                });
-                                $('#EventResults').show();
-                            } else {
-                                $('#EventResults').hide();
-                            }
-                        }
-                    });
-                });
-
-                $(document).on('click', '.list-group-item', function (e) {
-                    e.preventDefault();
-                    var id = $(this).data('id');
-                    var name = $(this).text();
-                    $('#EventID').val(id);
-                    $('#EventSearch').val(name);
+        $(document).ready(function () {
+            $('#EventSearch').on('input', function () {
+                var term = $(this).val();
+                if (term.length < 2) {
                     $('#EventResults').hide();
+                    return;
+                }
 
-                    $.ajax({
-                        url: '@Url.Action("GetEventDetails", "TicketOrders")',
-                        data: { eventId: id },
-                        success: function (data) {
-                            $('#AvailableTickets').val(data.availableTickets);
-                            $('#EventDate').val(data.eventDate ? new Date(data.eventDate).toLocaleDateString() : '');
+                $.ajax({
+                    url: '@Url.Action("SearchEvents", "TicketOrders")',
+                    data: { term: term },
+                    success: function (data) {
+                        $('#EventResults').empty();
+                        if (data.length > 0) {
+                            data.slice(0, 5).forEach(function (event) {
+                                $('#EventResults').append('<a href="#" class="list-group-item list-group-item-action" data-id="' + event.eventID + '">' + event.eventName + '</a>');
+                            });
+                            $('#EventResults').show();
+                        } else {
+                            $('#EventResults').hide();
                         }
-                    });
+                    }
                 });
             });
+
+            $(document).on('click', '.list-group-item', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                var name = $(this).text();
+                $('#EventID').val(id);
+                $('#EventSearch').val(name);
+                $('#EventResults').hide();
+
+                $.ajax({
+                    url: '@Url.Action("GetEventDetails", "TicketOrders")',
+                    data: { eventId: id },
+                    success: function (data) {
+                        $('#AvailableTickets').val(data.availableTickets);
+                        $('#EventDate').val(data.eventDate ? new Date(data.eventDate).toLocaleDateString() : '');
+                    }
+                });
+            });
+        });
     </script>
 }

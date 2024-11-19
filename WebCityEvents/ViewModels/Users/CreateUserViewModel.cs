@@ -11,6 +11,7 @@ namespace WebCityEvents.ViewModels.Users
         [EmailAddress(ErrorMessage = "Некорректный адрес")]
         public string Email { get; set; }
 
+        [Required(ErrorMessage = "Пароль обязателен")]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
 

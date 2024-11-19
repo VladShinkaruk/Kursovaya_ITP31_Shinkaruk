@@ -16,6 +16,20 @@ namespace WebCityEvents.Data
                 }
             }
 
+            var adminUsers = await userManager.GetUsersInRoleAsync("admin");
+            if (!adminUsers.Any())
+            {
+                var adminUser = new ApplicationUser
+                {
+                    UserName = "TestAdmin",
+                    Email = "admin@gmail.com",
+                    EmailConfirmed = true
+                };
+
+                await userManager.CreateAsync(adminUser, "0809Vlad");
+                await userManager.AddToRoleAsync(adminUser, "admin");
+            }
+
             if (context.Places.Any() && context.Organizers.Any() && context.Customers.Any() && context.Events.Any() && context.TicketOrders.Any())
             {
                 return;

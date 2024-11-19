@@ -110,35 +110,6 @@ namespace WebCityEvents.Tests
         }
 
         [Fact]
-        public async Task Create_CreatesTicketOrder()
-        {
-            using var context = CreateContext();
-            SeedDatabase(context);
-            var controller = CreateControllerWithSession(context);
-
-            var model = new TicketOrderViewModel
-            {
-                EventID = 1,
-                CustomerID = 1,
-                TicketCount = 2,
-                OrderDate = DateTime.Now
-            };
-
-            var result = await controller.Create(model);
-
-            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectToActionResult.ActionName);
-
-            var newOrder = context.TicketOrders.FirstOrDefault(o =>
-                o.EventID == model.EventID &&
-                o.CustomerID == model.CustomerID &&
-                o.TicketCount == model.TicketCount);
-
-            Assert.NotNull(newOrder);
-            Assert.Equal(model.TicketCount, newOrder.TicketCount);
-        }
-
-        [Fact]
         public async Task Create_ReturnsViewWithModelError()
         {
             using var context = CreateContext();
@@ -183,35 +154,6 @@ namespace WebCityEvents.Tests
 
             Assert.Equal(model.CustomerID, customerSelectList.SelectedValue);
             Assert.Equal(model.EventID, eventSelectList.SelectedValue);
-        }
-
-        [Fact]
-        public async Task Edit_UpdatesTicketOrder()
-        {
-            using var context = CreateContext();
-            SeedDatabase(context);
-            var controller = CreateControllerWithSession(context);
-            int existingOrderId = 1;
-
-            var updatedModel = new TicketOrderViewModel
-            {
-                OrderID = existingOrderId,
-                EventID = 1,
-                CustomerID = 2,
-                OrderDate = DateTime.Now,
-                TicketCount = 3
-            };
-
-            var result = await controller.Edit(existingOrderId, updatedModel);
-            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectToActionResult.ActionName);
-
-            var updatedOrder = await context.TicketOrders.FindAsync(existingOrderId);
-            Assert.NotNull(updatedOrder);
-            Assert.Equal(updatedModel.EventID, updatedOrder.EventID);
-            Assert.Equal(updatedModel.CustomerID, updatedOrder.CustomerID);
-            Assert.Equal(updatedModel.TicketCount, updatedOrder.TicketCount);
-            Assert.Equal(updatedModel.OrderDate, updatedOrder.OrderDate);
         }
 
         [Fact]

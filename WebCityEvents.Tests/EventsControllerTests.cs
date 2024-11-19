@@ -20,6 +20,11 @@ namespace WebCityEvents.Tests
             return new EventContext(_options);
         }
 
+        private EventsController CreateController(EventContext context)
+        {
+            return new EventsController(context);
+        }
+
         private void SeedDatabase(EventContext context)
         {
             context.Database.EnsureDeleted();
@@ -270,6 +275,51 @@ namespace WebCityEvents.Tests
             Assert.Null(controller.HttpContext.Request.Cookies["EventName"]);
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal(nameof(controller.Index), redirectToActionResult.ActionName);
+        }
+
+        [Fact]
+        public async Task SearchEventNames_ReturnsMatching()
+        {
+            using var context = CreateContext();
+            SeedDatabase(context);
+            var controller = CreateController(context);
+
+            var result = await controller.SearchEventNames("Concert") as JsonResult;
+
+            Assert.NotNull(result);
+            var events = Assert.IsType<List<string>>(result.Value);
+            Assert.Single(events);
+            Assert.Contains("Concert", events);
+        }
+
+        [Fact]
+        public async Task SearchPlaceNames_ReturnsMatching()
+        {
+            using var context = CreateContext();
+            SeedDatabase(context);
+            var controller = CreateController(context);
+
+            var result = await controller.SearchPlaceNames("Gallery") as JsonResult;
+
+            Assert.NotNull(result);
+            var places = Assert.IsType<List<string>>(result.Value);
+            Assert.Single(places);
+            Assert.Contains("Gallery", places);
+        }
+
+        [Fact]
+        public async Task SearchOrganizerNames_ReturnsMatching()
+        {
+            using var context = CreateContext();
+            SeedDatabase(context);
+            var controller = CreateController(context);
+
+            var result = await controller.SearchOrganizerNames("John Smith") as JsonResult;
+
+            Assert.NotNull(result);
+            var organizers = Assert.IsType<List<string>>(result.Value);
+            Assert.Single(organizers);
+            Assert.Contains("John Smith", organizers);
         }
     }
 }

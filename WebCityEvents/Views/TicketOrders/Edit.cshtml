@@ -92,7 +92,7 @@
                     success: function (data) {
                         $('#EventResults').empty();
                         if (data.length > 0) {
-                            data.forEach(function (event) {
+                            data.slice(0, 5).forEach(function (event) {
                                 $('#EventResults').append('<a href="#" class="list-group-item list-group-item-action" data-id="' + event.eventID + '">' + event.eventName + '</a>');
                             });
                             $('#EventResults').show();

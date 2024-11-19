@@ -9,15 +9,20 @@
 <a asp-action="Create" class="btn btn-success mb-3">Добавить новое мероприятие</a>
 
 <form asp-action="Index" method="get" class="mb-3">
-    <div class="input-group mb-3">
-        <input type="text" name="eventName" value="@ViewBag.EventName" class="form-control" placeholder="Название мероприятия">
-        <input type="text" name="placeName" value="@ViewBag.PlaceName" class="form-control" placeholder="Место проведения">
-        <input type="text" name="organizerName" value="@ViewBag.OrganizerName" class="form-control" placeholder="Организатор">
-        <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control" placeholder="Дата начала">
-        <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control" placeholder="Дата окончания">
+    <div class="input-group mb-3 position-relative">
+        <input type="text" id="eventNameSearch" name="eventName" value="@ViewBag.EventName" class="form-control" placeholder="Название мероприятия">
+        <div id="eventNameResults" class="list-group position-absolute w-100" style="top: 100%; z-index: 1000; display: none;"></div>
+
+        <input type="text" id="placeNameSearch" name="placeName" value="@ViewBag.PlaceName" class="form-control" placeholder="Место проведения">
+        <div id="placeNameResults" class="list-group position-absolute w-100" style="top: 100%; z-index: 1000; display: none;"></div>
+
+        <input type="text" id="organizerNameSearch" name="organizerName" value="@ViewBag.OrganizerName" class="form-control" placeholder="Организатор">
+        <div id="organizerNameResults" class="list-group position-absolute w-100" style="top: 100%; z-index: 1000; display: none;"></div>
+
         <button type="submit" class="btn btn-primary">Поиск</button>
     </div>
 </form>
+
 
 <form asp-action="ClearFilters" method="post" class="mb-3">
     <button type="submit" class="btn btn-danger">Очистить фильтры</button>
@@ -100,3 +105,43 @@ else
         </div>
     </div>
 }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function showResults(inputId, resultsId, urlAction) {
+            $(inputId).on('input', function () {
+                var term = $(this).val();
+                if (term.length < 2) {
+                    $(resultsId).hide();
+                    return;
+                }
+
+                $.ajax({
+                    url: urlAction,
+                    data: { term: term },
+                    success: function (data) {
+                        $(resultsId).empty();
+                        if (data.length > 0) {
+                            data.forEach(function (item) {
+                                $(resultsId).append('<a href="#" class="list-group-item list-group-item-action">' + item + '</a>');
+                            });
+                            $(resultsId).show();
+                        } else {
+                            $(resultsId).hide();
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', resultsId + ' .list-group-item', function (e) {
+                e.preventDefault();
+                $(inputId).val($(this).text());
+                $(resultsId).hide();
+            });
+        }
+
+        showResults('#eventNameSearch', '#eventNameResults', '@Url.Action("SearchEventNames", "Events")');
+        showResults('#placeNameSearch', '#placeNameResults', '@Url.Action("SearchPlaceNames", "Events")');
+        showResults('#organizerNameSearch', '#organizerNameResults', '@Url.Action("SearchOrganizerNames", "Events")');
+    });
+</script>

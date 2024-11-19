@@ -14,7 +14,6 @@ namespace WebCityEvents.Controllers
         }
 
         [HttpGet]
-        [ResponseCache(Duration = 286, Location = ResponseCacheLocation.Client, NoStore = false)]
         public IActionResult Index(int numberRows = 10)
         {
             var model = _operationService.GetHomeViewModel(numberRows);
