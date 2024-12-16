@@ -22,7 +22,7 @@ namespace WebCityEvents.Data
                 builder.AddJsonFile("appsettings.json");
                 IConfigurationRoot configuration = builder.Build();
 
-                string connectionString = configuration.GetConnectionString("LocalSQLConnection");
+                string connectionString = configuration.GetConnectionString("SQLConnection");
 
                 optionsBuilder
                     .UseSqlServer(connectionString)
