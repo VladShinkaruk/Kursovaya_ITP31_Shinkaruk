@@ -131,13 +131,13 @@ namespace WebCityEvents.Controllers
             var eventItem = await _context.Events.FindAsync(model.EventID);
             if (eventItem == null)
             {
-                ModelState.AddModelError("", "Мероприятие не найдено.");
+                ModelState.AddModelError("", "Мероприятие не найдено");
                 return View(model);
             }
 
             if (model.OrderDate > eventItem.EventDate)
             {
-                ModelState.AddModelError("", "Дата заказа не может быть позже даты проведения мероприятия.");
+                ModelState.AddModelError("", "Дата заказа не может быть позже даты проведения мероприятия");
                 ViewBag.CustomerID = new SelectList(_context.Customers, "CustomerID", "FullName");
                 return View(model);
             }
@@ -150,7 +150,7 @@ namespace WebCityEvents.Controllers
 
             if (model.TicketCount > availableTickets)
             {
-                ModelState.AddModelError("", "Недостаточно доступных билетов на данное мероприятие.");
+                ModelState.AddModelError("", "Недостаточно доступных билетов на данное мероприятие");
                 ViewBag.CustomerID = new SelectList(_context.Customers, "CustomerID", "FullName");
                 return View(model);
             }
@@ -226,7 +226,7 @@ namespace WebCityEvents.Controllers
 
                     if (ticketOrderViewModel.OrderDate > eventItem.EventDate)
                     {
-                        ModelState.AddModelError("", "Дата заказа не может быть позже даты проведения мероприятия.");
+                        ModelState.AddModelError("", "Дата заказа не может быть позже даты проведения мероприятия");
                         ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "FullName", ticketOrderViewModel.CustomerID);
                         ViewData["EventID"] = new SelectList(_context.Events, "EventID", "EventName", ticketOrderViewModel.EventID);
                         return View(ticketOrderViewModel);
@@ -240,7 +240,7 @@ namespace WebCityEvents.Controllers
 
                     if (ticketOrderViewModel.TicketCount > availableTickets)
                     {
-                        ModelState.AddModelError("", "Недостаточно доступных билетов на данное мероприятие.");
+                        ModelState.AddModelError("", "Недостаточно доступных билетов на данное мероприятие");
                         ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerID", "FullName", ticketOrderViewModel.CustomerID);
                         ViewData["EventID"] = new SelectList(_context.Events, "EventID", "EventName", ticketOrderViewModel.EventID);
                         return View(ticketOrderViewModel);

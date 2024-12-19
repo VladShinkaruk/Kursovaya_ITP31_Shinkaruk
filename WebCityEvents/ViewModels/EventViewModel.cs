@@ -14,6 +14,7 @@ namespace WebCityEvents.ViewModels
         public int OrganizerID { get; set; }
 
         public string PlaceName { get; set; }
+
         public string OrganizerName { get; set; }
 
         public DateTime EventDate { get; set; }
