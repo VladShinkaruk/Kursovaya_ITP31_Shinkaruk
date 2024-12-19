@@ -128,7 +128,7 @@ namespace WebCityEvents.Tests
 
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.True(controller.ModelState.ContainsKey(""));
-            Assert.Equal("Мероприятие не найдено.", controller.ModelState[""].Errors.First().ErrorMessage);
+            Assert.Equal("Мероприятие не найдено", controller.ModelState[""].Errors.First().ErrorMessage);
         }
 
         [Fact]
